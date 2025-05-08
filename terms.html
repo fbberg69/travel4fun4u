@@ -1,0 +1,283 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service - Travel4Fun</title>
+  <meta name="description" content="Read the Terms of Service for Travel4Fun. Understand the rules and conditions for using our website and services.">
+
+  <!-- Favicon e Ícones -->
+  <link rel="icon" type="image/png" href="/assets/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="shortcut icon" href="/assets/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="Travel4Fun" />
+  <link rel="manifest" href="/assets/site.webmanifest" />
+
+  <!-- CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css">
+
+  <!-- Google AdSense Script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9106842518042265" crossorigin="anonymous"></script>
+</head>
+
+<body class="font-sans antialiased text-gray-800 bg-gray-50">
+  <!-- Google AdSense Autorelaxed Ad -->
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-format="autorelaxed"
+       data-ad-client="ca-pub-9106842518042265"
+       data-ad-slot="7506524692"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+
+  <!-- Header -->
+  <header class="fixed w-full bg-white shadow-lg z-50">
+    <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+      <a href="/" class="text-2xl font-bold text-blue-600 flex items-center">
+        <i class="fas fa-plane-departure mr-2"></i> Travel4Fun
+      </a>
+      
+      <nav class="hidden md:flex space-x-8" id="nav-menu">
+        <a href="/#destinations" class="font-medium hover:text-blue-600 transition">Destinations</a>
+        <a href="/#deals" class="font-medium hover:text-blue-600 transition">Hot Deals</a>
+        <a href="/#guides" class="font-medium hover:text-blue-600 transition">Guides</a>
+        <a href="/#testimonials" class="font-medium hover:text-blue-600 transition">Reviews</a>
+        <a href="/affiliate-disclosure" class="font-medium text-gray-500 hover:text-gray-700 transition">Disclosure</a>
+      </nav>
+      
+      <div class="md:hidden">
+        <button class="text-gray-700 focus:outline-none" aria-label="Toggle mobile menu" aria-expanded="false" id="menu-toggle">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="pt-24 pb-16">
+    <div class="container mx-auto px-6">
+      <h1 class="text-4xl font-bold mb-8 text-center">Terms of Service</h1>
+      
+      <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <h2 class="text-2xl font-semibold mb-4">1. Acceptance of Terms</h2>
+        <p class="text-gray-600 mb-4">By accessing or using the Travel4Fun website (the "Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree, please do not use the Service.</p>
+      </section>
+
+      <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <h2 class="text-2xl font-semibold mb-4">2. Use of the Service</h2>
+        <p class="text-gray-600 mb-4">You may use the Service only for lawful purposes and in accordance with these Terms. You are prohibited from:</p>
+        <ul class="list-disc list-inside text-gray-600 space-y-2">
+          <li>Using the Service to engage in illegal activities.</li>
+          <li>Attempting to interfere with the proper functioning of the Service.</li>
+          <li>Distributing malware or harmful content through the Service.</li>
+        </ul>
+      </section>
+
+      <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <h2 class="text-2xl font-semibold mb-4">3. Intellectual Property</h2>
+        <p class="text-gray-600 mb-4">All content on the Service, including text, graphics, and logos, is the property of Travel4Fun or its licensors and is protected by copyright and trademark laws.</p>
+      </section>
+
+      <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <h2 class="text-2xl font-semibold mb-4">4. Affiliate Links</h2>
+        <p class="text-gray-600 mb-4">The Service contains affiliate links. Clicking these links may result in a commission to Travel4Fun, as disclosed in our Affiliate Disclosure.</p>
+      </section>
+
+      <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <h2 class="text-2xl font-semibold mb-4">5. Limitation of Liability</h2>
+        <p class="text-gray-600 mb-4">Travel4Fun is not liable for any indirect, incidental, or consequential damages arising from your use of the Service.</p>
+      </section>
+
+      <section class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-semibold mb-4">6. Contact Us</h2>
+        <p class="text-gray-600 mb-4">If you have any questions about these Terms, please contact us at <a href="/contact" class="text-blue-600 hover:underline">our contact page</a>.</p>
+      </section>
+
+      <p class="text-center text-gray-500 mt-8">Last Updated: January 15, 2025</p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white pt-16 pb-8">
+    <div class="container mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-12">
+        <div>
+          <h3 class="text-xl font-bold mb-6 flex items-center">
+            <i class="fas fa-plane-departure mr-2"></i> Travel4Fun
+          </h3>
+          <p class="text-gray-400">Smart travel guides and verified deals to help you explore the world for less.</p>
+          <div class="flex space-x-4 mt-6">
+            <a href="https://pt.pinterest.com/Travel4Fun4U/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition"><i class="fab fa-pinterest text-xl"></i></a>
+            <a href="https://x.com/DoidaoDuda" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition"><i class="fab fa-x-twitter text-xl"></i></a>
+            <a href="https://www.linkedin.com/in/jc-berg-2b355035a/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin text-xl"></i></a>
+            <a href="https://ko-fi.com/travel4fun4u" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition"><i class="fas fa-coffee text-xl"></i></a>
+          </div>
+        </div>
+        
+        <div>
+          <h4 class="font-bold text-lg mb-6">Destinations</h4>
+          <ul class="space-y-3">
+            <li><a href="https://medium.com/@jcbergxuxu/7-day-italy-trip-on-wegotrip-com-transform-your-life-today-78580177e130?utm_source=travel4fun&utm_medium=footer&utm_campaign=italy_guide" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">Italy</a></li>
+            <li><a href="https://medium.com/@jcbergxuxu/i-let-ai-plan-my-entire-trip-heres-exactly-what-happened-18be02c93a99?utm_source=travel4fun&utm_medium=footer&utm_campaign=ai_planner" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">AI Trip Planner</a></li>
+            <li><a href="https://medium.com/@jcbergxuxu/how-to-plan-smart-travel-itineraries-with-ai-step-by-step-guide-tools-0aacfb99842f?utm_source=travel4fun&utm_medium=footer&utm_campaign=ai_tools" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">AI Travel Tools</a></li>
+            <li><a href="https://medium.com/@jcbergxuxu/7-day-france-travel-handbook-explore-paris-lyon-the-riviera-3f459b5dd53d?utm_source=travel4fun&utm_medium=footer&utm_campaign=france_guide" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">France</a></li>
+            <li><a href="https://medium.com/@jcbergxuxu/exploring-thailand-while-building-your-affiliate-empire-the-ultimate-work-play-guide-56c012549d39?utm_source=travel4fun&utm_medium=footer&utm_campaign=thailand_guide" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">Thailand</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-bold text-lg mb-6">Resources</h4>
+          <ul class="space-y-3">
+            <li><a href="https://wegotrip.tp.st/8Fiplbc2" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">Audio Tours</a></li>
+            <li><a href="https://localrent.tp.st/tBbjydi3" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">Car Rentals</a></li>
+            <li><a href="https://visitorscoverage.tp.st/kVEKww8v" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">Travel Insurance</a></li>
+            <li><a href="https://airalo.tp.st/WPsFTtzQ" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">eSIM Cards</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-bold text-lg mb-6">Company</h4>
+          <ul class="space-y-3">
+            <li><a href="/about" class="text-gray-400 hover:text-white transition">About Us</a></li>
+            <li><a href="/contact" class="text-gray-400 hover:text-white transition">Contact</a></li>
+            <li><a href="/affiliate-disclosure" class="text-gray-400 hover:text-white transition">Affiliate Disclosure</a></li>
+            <li><a href="/privacy" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="/terms" class="text-gray-400 hover:text-white transition">Terms of Service</a></li>
+            <li><a href="javascript:window.cookieconsent.open();" class="text-gray-400 hover:text-white transition">Manage Cookie Preferences</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+        <p>© 2025 Travel4Fun. All rights reserved. Partnered with <a href="https://www.travelpayouts.com/?marker=609158" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">Travelpayouts</a>.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Mobile Menu Toggle
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      const navMenu = document.getElementById('nav-menu');
+      const isExpanded = this.getAttribute('aria-expanded') === 'true';
+      navMenu.classList.toggle('active');
+      this.setAttribute('aria-expanded', !isExpanded);
+    });
+  </script>
+
+  <style>
+    @media (max-width: 768px) {
+      #nav-menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+
+      #nav-menu.active {
+        display: flex;
+      }
+    }
+  </style>
+
+  <!-- CookieConsent and Google Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+  <script>
+    function initializeCookieConsent() {
+      if (window.cookieconsent) {
+        window.cookieconsent.initialise({
+          palette: {
+            popup: { background: "#1e293b" },
+            button: { background: "#f59e0b" }
+          },
+          position: "bottom-left",
+          type: "opt-in",
+          content: {
+            message: "We use cookies to enhance your experience, analyze site usage, and serve personalized ads via third parties like Google AdSense. By clicking 'Allow', you consent to our use of cookies.",
+            dismiss: "Decline",
+            allow: "Allow",
+            link: "Learn more",
+            href: "/privacy"
+          },
+          onInitialise: function(status) {
+            if (status === 'allow' && !window.gaLoaded) {
+              loadGoogleAnalytics();
+            }
+          },
+          onStatusChange: function(status) {
+            if (status === 'allow' && !window.gaLoaded) {
+              loadGoogleAnalytics();
+            }
+          }
+        });
+      } else {
+        setTimeout(initializeCookieConsent, 100);
+      }
+    }
+
+    initializeCookieConsent();
+
+    function loadGoogleAnalytics() {
+      if (window.gaLoaded) return;
+      var ga = document.createElement('script');
+      ga.async = true;
+      ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-VPB2FSQ7S2';
+      document.head.appendChild(ga);
+      
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VPB2FSQ7S2');
+      window.gaLoaded = true;
+    }
+  </script>
+</body>
+</html>

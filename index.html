@@ -1,0 +1,1144 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel4Fun | Smart Travel Guides & Exclusive Deals</title>
+  <meta name="description" content="Premium travel guides with money-saving hacks. Book tours, hotels, and rentals at insider prices using our verified affiliate links.">
+  <!-- Open Graph and Twitter Card Meta Tags for SEO -->
+  <meta property="og:title" content="Travel4Fun | Smart Travel Guides & Exclusive Deals">
+  <meta property="og:description" content="Premium travel guides with money-saving hacks. Book tours, hotels, and rentals at insider prices using our verified affiliate links.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1533676802871-eca1ae998cd5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+  <meta property="og:url" content="https://yourwebsite.com">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Travel4Fun | Smart Travel Guides & Exclusive Deals">
+  <meta name="twitter:description" content="Premium travel guides with money-saving hacks. Book tours, hotels, and rentals at insider prices using our verified affiliate links.">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1533676802871-eca1ae998cd5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+  
+  <!-- Favicon e Ícones -->
+  <link rel="icon" type="image/png" href="/assets/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="shortcut icon" href="/assets/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="Travel4Fun" />
+  <link rel="manifest" href="/assets/site.webmanifest" />
+  
+  <!-- Preload Critical Resources -->
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" as="style">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+  
+  <!-- CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css">
+  
+  <!-- SheetJS Library for XLSX Processing -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  
+  <!-- Google AdSense Script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9106842518042265" crossorigin="anonymous"></script>
+  
+  <style>
+    :root {
+      --primary: #2563eb;
+      --secondary: #f59e0b;
+      --dark: #1e293b;
+      --light: #f8fafc;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+    }
+    
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .affiliate-badge:after {
+      content: "EXCLUSIVE DEAL";
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: var(--secondary);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .testimonial-card {
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .testimonial-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+    
+    .glow-text {
+      background: linear-gradient(to right, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      text-shadow: 
+        0 0 10px rgba(245, 158, 11, 0.3),
+        0 0 20px rgba(245, 158, 11, 0.2),
+        0 0 30px rgba(245, 158, 11, 0.1);
+      animation: text-pulse 4s infinite alternate;
+    }
+    
+    @keyframes text-pulse {
+      0% { 
+        opacity: 0.95;
+        background-position: 0% 50%;
+      }
+      50% { 
+        opacity: 1;
+        background-position: 100% 50%;
+        text-shadow: 
+          0 0 15px rgba(245, 158, 11, 0.5),
+          0 0 25px rgba(245, 158, 11, 0.3),
+          0 0 35px rgba(245, 158, 11, 0.2);
+      }
+      100% { 
+        opacity: 0.95;
+        background-position: 0% 50%;
+      }
+    }
+    
+    h1 span.glow-text {
+      position: relative;
+      z-index: 1;
+    }
+    
+    h1 span.glow-text::after {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: -10px;
+      right: -10px;
+      bottom: -5px;
+      background: linear-gradient(to right, #fbbf24, #f59e0b);
+      z-index: -1;
+      filter: blur(15px);
+      opacity: 0.7;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body class="font-sans antialiased text-gray-800 bg-gray-50">
+  <!-- Google AdSense Autorelaxed Ad -->
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-format="autorelaxed"
+       data-ad-client="ca-pub-9106842518042265"
+       data-ad-slot="7506524692"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+
+  <!-- Premium Header -->
+  <header class="fixed w-full bg-white shadow-lg z-50">
+    <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+      <a href="/" class="text-2xl font-bold text-blue-600 flex items-center">
+        <i class="fas fa-plane-departure mr-2"></i> Travel4Fun
+      </a>
+      
+      <nav class="hidden md:flex space-x-8" id="nav-menu">
+        <a href="#destinations" class="font-medium hover:text-blue-600 transition">Destinations</a>
+        <a href="#deals" class="font-medium hover:text-blue-600 transition">Hot Deals</a>
+        <a href="#guides" class="font-medium hover:text-blue-600 transition">Guides</a>
+        <a href="#testimonials" class="font-medium hover:text-blue-600 transition">Reviews</a>
+        <a href="/affiliate-disclosure" class="font-medium text-gray-500 hover:text-gray-700 transition">Disclosure</a>
+      </nav>
+      
+      <div class="md:hidden">
+        <button class="text-gray-700 focus:outline-none" aria-label="Toggle mobile menu" aria-expanded="false" id="menu-toggle">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ====== ULTRA PREMIUM HERO SECTION ====== -->
+  <section class="relative h-screen flex items-center justify-center text-white overflow-hidden">
+    <div class="absolute inset-0">
+      <video autoplay loop muted playsinline class="w-full h-full object-cover" aria-hidden="true">
+        <source src="assets/videos/scooter.webm" type="video/webm">
+        <source src="assets/videos/scooter.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-900/70 via-blue-800/50 to-amber-500/30 particle-overlay">
+      <div class="film-grain"></div>
+      <div class="particles"></div>
+    </div>
+
+    <div class="floating-element-1">
+      <div class="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+        <i class="fas fa-umbrella-beach text-xl text-amber-300"></i>
+      </div>
+    </div>
+    
+    <div class="floating-element-2">
+      <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+        <i class="fas fa-plane text-2xl text-blue-300"></i>
+      </div>
+    </div>
+    
+    <div class="floating-element-3">
+      <div class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+        <i class="fas fa-map-marked-alt text-lg text-green-300"></i>
+      </div>
+    </div>
+
+    <div class="lens-flare"></div>
+
+    <div class="container mx-auto px-6 relative z-10 text-center">
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500 drop-shadow-lg glow-text">Travel Smarter</span><br>
+        <span class="text-white drop-shadow-lg glow-text-white">Not Harder</span>
+      </h1>
+      
+      <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto bg-white/10 backdrop-blur-sm px-6 py-4 rounded-xl border border-white/20 glow-box cinematic-text">
+        ✨ Unlock <span class="font-semibold text-amber-300">secret deals</span> saving up to <span class="font-bold">70%</span> on every trip
+      </p>
+      
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="#deals" class="relative overflow-hidden group bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-4 px-8 rounded-full inline-flex items-center transition-all transform hover:scale-105 shadow-lg glow-button liquid-button">
+          <span>View Today's Deals</span>
+          <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+          <span class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></span>
+        </a>
+        
+        <a href="#guides" class="bg-white/90 hover:bg-white text-blue-800 font-bold py-4 px-8 rounded-full inline-flex items-center transition transform hover:scale-105 shadow-lg shadow-white/20 liquid-button">
+          Read Our Guides <i class="fas fa-book-open ml-2"></i>
+        </a>
+      </div>
+    </div>
+    
+    <div class="absolute bottom-10 left-0 right-0 text-center">
+      <a href="#destinations" class="inline-block animate-bounce text-amber-300 hover:text-white transition">
+        <div class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center pulse-icon">
+          <i class="fas fa-chevron-down"></i>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <style>
+    .particle-overlay {
+      background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='2'/%3E%3Ccircle cx='13' cy='13' r='2'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .film-grain {
+      position: absolute;
+      inset: 0;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
+      pointer-events: none;
+    }
+
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="30" cy="30" r="1" fill="white" opacity="0.1"/><circle cx="80" cy="70" r="1.2" fill="white" opacity="0.1"/><circle cx="150" cy="40" r="0.8" fill="white" opacity="0.1"/><circle cx="40" cy="150" r="1" fill="white" opacity="0.1"/><circle cx="120" cy="120" r="1.5" fill="white" opacity="0.1"/></svg>');
+      background-size: 200px 200px;
+      animation: particleMove 20s linear infinite;
+    }
+
+    @keyframes particleMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 200px 200px; }
+    }
+
+    .glow-text {
+      text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+      animation: text-pulse 4s infinite alternate;
+    }
+
+    .glow-text-white {
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .glow-box {
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      animation: box-pulse 6s infinite;
+    }
+
+    .glow-button {
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+      animation: pulse-glow 3s infinite;
+    }
+
+    @keyframes text-pulse {
+      0% { opacity: 0.9; }
+      50% { opacity: 1; text-shadow: 0 0 15px rgba(245, 158, 11, 0.8); }
+      100% { opacity: 0.9; }
+    }
+
+    @keyframes box-pulse {
+      0% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); }
+      50% { box-shadow: 0 0 30px rgba(255, 255, 255, 0.2); }
+      100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); }
+    }
+
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
+      50% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.7); }
+      100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
+    }
+
+    .floating-element-1 {
+      position: absolute;
+      top: 20%;
+      left: 5%;
+      animation: float 8s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    .floating-element-2 {
+      position: absolute;
+      bottom: 25%;
+      right: 10%;
+      animation: float 10s ease-in-out infinite 2s;
+      z-index: 1;
+    }
+
+    .floating-element-3 {
+      position: absolute;
+      top: 30%;
+      right: 15%;
+      animation: float 7s ease-in-out infinite 1s;
+      z-index: 1;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    .lens-flare {
+      position: fixed;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      z-index: 100;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .liquid-button {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .liquid-button::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(to bottom right, rgba(255,255,255,0.3), transparent);
+      transform: rotate(30deg);
+      transition: all 0.5s ease;
+    }
+
+    .liquid-button:hover::after {
+      transform: rotate(30deg) translateY(100%);
+    }
+
+    .pulse-icon {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.7; }
+    }
+
+    @media (max-width: 768px) {
+      .floating-element-1,
+      .floating-element-2,
+      .floating-element-3 {
+        display: none;
+      }
+      
+      .lens-flare {
+        display: none;
+      }
+
+      #nav-menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+
+      #nav-menu.active {
+        display: flex;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('mousemove', (e) => {
+      const flare = document.querySelector('.lens-flare');
+      const x = e.clientX;
+      const y = e.clientY;
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+      const maxDistance = Math.sqrt(Math.pow(centerX, 2) + Math.pow(centerY, 2));
+      
+      flare.style.left = `${x}px`;
+      flare.style.top = `${y}px`;
+      flare.style.opacity = `${1 - (distance / maxDistance) * 0.8}`;
+    });
+
+    let flareTimeout;
+    document.addEventListener('mousemove', () => {
+      const flare = document.querySelector('.lens-flare');
+      flare.style.opacity = '0.5';
+      clearTimeout(flareTimeout);
+      flareTimeout = setTimeout(() => {
+        flare.style.opacity = '0';
+      }, 1000);
+    });
+
+    // Mobile Menu Toggle
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      const navMenu = document.getElementById('nav-menu');
+      const isExpanded = this.getAttribute('aria-expanded') === 'true';
+      navMenu.classList.toggle('active');
+      this.setAttribute('aria-expanded', !isExpanded);
+    });
+  </script>
+
+  <!-- Trust Badges -->
+  <section class="py-8 bg-gray-100">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+        <div class="text-center">
+          <div class="text-3xl font-bold text-blue-600">50K+</div>
+          <div class="text-gray-600">Travelers Helped</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold text-blue-600">$2M+</div>
+          <div class="text-gray-600">Saved in 2024</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold text-blue-600">4.9★</div>
+          <div class="text-gray-600">Average Rating</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Premium Destinations -->
+  <section id="destinations" class="py-16 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Most Booked Destinations</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Where our travelers are saving big this season</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="relative overflow-hidden rounded-xl shadow-lg group">
+          <img src="https://images.unsplash.com/photo-1533676802871-eca1ae998cd5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" 
+               alt="Scenic view of Italy with historic architecture" 
+               class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex flex-col justify-end p-6">
+            <h3 class="text-2xl font-bold text-white mb-2">Italy</h3>
+            <p class="text-gray-200 mb-4">From €12 self-guided tours in Rome to luxury stays in Florence</p>
+            <a href="/italy" class="bg-white hover:bg-gray-100 text-blue-600 font-medium py-2 px-6 rounded-full inline-block w-fit transition transform group-hover:scale-105">
+              Explore <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+          <div class="absolute top-4 right-4 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+            TOP SAVINGS
+          </div>
+        </div>
+        
+        <div class="relative overflow-hidden rounded-xl shadow-lg group">
+          <img src="https://images.unsplash.com/photo-1492571350019-22de08371fd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" 
+               alt="Traditional Japanese culture with cherry blossoms" 
+               class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex flex-col justify-end p-6">
+            <h3 class="text-2xl font-bold text-white mb-2">Japan</h3>
+            <p class="text-gray-200 mb-4">Cherry blossoms, ancient temples, and bullet train adventures</p>
+            <a href="/japan" class="bg-white hover:bg-gray-100 text-blue-600 font-medium py-2 px-6 rounded-full inline-block w-fit transition transform group-hover:scale-105">
+              Explore <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div class="relative overflow-hidden rounded-xl shadow-lg group">
+          <img src="https://images.unsplash.com/photo-1483729558449-99ef09a8c325?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" 
+               alt="Vibrant Brazilian landscape with beaches and carnival" 
+               class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex flex-col justify-end p-6">
+            <h3 class="text-2xl font-bold text-white mb-2">Brazil</h3>
+            <p class="text-gray-200 mb-4">Carnival magic, Amazon adventures, and tropical beaches</p>
+            <a href="/brazil" class="bg-white hover:bg-gray-100 text-blue-600 font-medium py-2 px-6 rounded-full inline-block w-fit transition transform group-hover:scale-105">
+              Explore <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+          <div class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+            TRENDING
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Money-Saving Tools -->
+  <section id="deals" class="py-16 gradient-bg text-white">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Smart Traveler's Toolkit</h2>
+        <p class="text-xl text-blue-100 max-w-2xl mx-auto">Premium resources that save you time and money</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden relative affiliate-badge">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="bg-blue-100 p-3 rounded-full mr-4">
+                <i class="fas fa-headphones text-blue-600 text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-gray-800">Audio City Guides</h3>
+            </div>
+            <p class="text-gray-600 mb-6">Skip expensive group tours. Our audio guides give you local insights at 80% less.</p>
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-2xl font-bold text-gray-900">From €12</span>
+                <span class="block text-sm text-gray-500">vs €60+ for guided tours</span>
+              </div>
+              <a href="https://wegotrip.tp.st/8Fiplbc2" target="_blank" rel="noopener noreferrer" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full inline-block transition transform hover:scale-105">
+                Book Now
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden relative affiliate-badge">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="bg-blue-100 p-3 rounded-full mr-4">
+                <i class="fas fa-car text-blue-600 text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-gray-800">Local Car Rentals</h3>
+            </div>
+            <p class="text-gray-600 mb-6">Rent directly from locals at 60% less than big rental companies. No hidden fees.</p>
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-2xl font-bold text-gray-900">From €18/day</span>
+                <span class="block text-sm text-gray-500">vs €45+ elsewhere</span>
+              </div>
+              <a href="https://localrent.tp.st/tBbjydi3" target="_blank" rel="noopener noreferrer" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full inline-block transition transform hover:scale-105">
+                Rent Now
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden relative affiliate-badge">
+          <div class="p-6">
+            <div class="flex items-center mb-4">
+              <div class="bg-blue-100 p-3 rounded-full mr-4">
+                <i class="fas fa-shield-alt text-blue-600 text-xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-gray-800">Travel Insurance</h3>
+            </div>
+            <p class="text-gray-600 mb-6">Comprehensive coverage that includes COVID-19 protection from €1.50/day.</p>
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-2xl font-bold text-gray-900">From €1.50/day</span>
+                <span class="block text-sm text-gray-500">Covers medical, trip cancellation</span>
+              </div>
+              <a href="https://visitorscoverage.tp.st/kVEKww8v" target="_blank" rel="noopener noreferrer" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full inline-block transition transform hover:scale-105">
+                Get Covered
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Premium Guides -->
+  <section id="guides" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Premium Travel Guides</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Expert-curated itineraries with money-saving secrets</p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div class="md:flex">
+            <div class="md:w-1/3">
+              <img src="https://images.unsplash.com/photo-1533676802871-eca1ae998cd5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" 
+                   alt="Cover image for Italy travel guide featuring historic architecture" 
+                   class="w-full h-full object-cover">
+            </div>
+            <div class="p-6 md:w-2/3">
+              <div class="flex items-center mb-2">
+                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mr-2">BESTSELLER</span>
+                <span class="text-sm text-gray-500"><i class="fas fa-clock mr-1"></i> 12 min read</span>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Italy on a Budget: How I Saved €152 in 7 Days</h3>
+              <p class="text-gray-600 mb-4">Discover how to experience Rome, Florence, and Venice without breaking the bank. Includes secret free attractions.</p>
+              <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                  <img src="https://miro.medium.com/v2/resize:fill:40:40/1*3o1Z8xQ4Q4Q4Q4Q4Q4Q4Q.png" 
+                       alt="Author João Berg profile picture" 
+                       class="w-8 h-8 rounded-full mr-2">
+                  <span class="text-sm font-medium">João Berg</span>
+                </div>
+                <a href="https://medium.com/@jcbergxuxu/how-to-road-trip-through-italy-without-the-crowds-car-rentals-vineyards-secret-villages-aa8ba2f975a8" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">
+                  Read Guide <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div class="md:flex">
+            <div class="md:w-1/3">
+              <img src="https://images.unsplash.com/photo-1492571350019-22de08371fd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" 
+                   alt="Cover image for Japan travel guide featuring cherry blossoms" 
+                   class="w-full h-full object-cover">
+            </div>
+            <div class="p-6 md:w-2/3">
+              <div class="flex items-center mb-2">
+                <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-3 py-1 rounded-full mr-2">NEW</span>
+                <span class="text-sm text-gray-500"><i class="fas fa-clock mr-1"></i> 15 min read</span>
+              </div>
+              <h3 class="text-xl font-bold mb-3">Japan Cherry Blossom Itinerary: 10-Day Perfection</h3>
+              <p class="text-gray-600 mb-4">From Tokyo to Kyoto, the ultimate sakura season guide with JR Pass hacks and hidden spots.</p>
+              <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                  <img src="https://miro.medium.com/v2/resize:fill:40:40/1*3o1Z8xQ4Q4Q4Q4Q4Q4Q4Q.png" 
+                       alt="Author João Berg profile picture" 
+                       class="w-8 h-8 rounded-full mr-2">
+                  <span class="text-sm font-medium">João Berg</span>
+                </div>
+                <a href="https://medium.com/@jcbergxuxu/japan-explorer-master-the-art-of-affiliate-marketing-in-the-land-of-the-rising-sun-b99b5e21615c" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">
+                  Read Guide <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="https://medium.com/@jcbergxuxu" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-bold">
+          View All Guides on Medium <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Proof -->
+  <section id="testimonials" class="py-16 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Travelers Love Us</h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Real savings from our community</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-gray-50 rounded-xl p-6 testimonial-card">
+          <div class="flex items-center mb-4">
+            <div class="flex-shrink-0">
+              <img class="h-12 w-12 rounded-full" src="https://randomuser.me/api/portraits/women/32.jpg" alt="Profile picture of Sarah K.">
+            </div>
+            <div class="ml-4">
+              <h4 class="text-lg font-bold">Sarah K.</h4>
+              <div class="flex text-amber-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-4">"The Rome audio tours saved us €87 compared to guided tours. The app even showed us secret spots our hotel concierge didn't know!"</p>
+          <div class="text-sm text-gray-500">Visited Italy • May 2024</div>
+        </div>
+        
+        <div class="bg-gray-50 rounded-xl p-6 testimonial-card">
+          <div class="flex items-center mb-4">
+            <div class="flex-shrink-0">
+              <img class="h-12 w-12 rounded-full" src="https://randomuser.me/api/portraits/men/54.jpg" alt="Profile picture of Michael T.">
+            </div>
+            <div class="ml-4">
+              <h4 class="text-lg font-bold">Michael T.</h4>
+              <div class="flex text-amber-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-4">"Local Rent gave me a perfect car in Sicily for €22/day when Hertz wanted €65. João's guide helped me avoid tourist traps too."</p>
+          <div class="text-sm text-gray-500">Visited Italy • April 2024</div>
+        </div>
+        
+        <div class="bg-gray-50 rounded-xl p-6 testimonial-card">
+          <div class="flex items-center mb-4">
+            <div class="flex-shrink-0">
+              <img class="h-12 w-12 rounded-full" src="https://randomuser.me/api/portraits/women/68.jpg" alt="Profile picture of Priya M.">
+            </div>
+            <div class="ml-4">
+              <h4 class="text-lg font-bold">Priya M.</h4>
+              <div class="flex text-amber-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-4">"Followed the Japan itinerary exactly and had the trip of a lifetime. The JR Pass tip alone saved me €120 on train tickets!"</p>
+          <div class="text-sm text-gray-500">Visited Japan • March 2024</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+    <div class="container mx-auto px-6 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready for Your Next Adventure?</h2>
+      <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Join 50,000+ smart travelers who save an average of €240 per trip using our guides</p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="#deals" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-full inline-block transition transform hover:scale-105">
+          View Exclusive Deals <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+        <a href="https://medium.com/@jcbergxuxu" target="_blank" rel="noopener noreferrer" class="bg-white hover:bg-gray-100 text-blue-600 font-bold py-4 px-8 rounded-full inline-block transition transform hover:scale-105">
+          Read Travel Guides
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Advanced Savings Calculator -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-6">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Smart Savings Calculator</h2>
+      <p class="text-xl text-gray-600 text-center mb-12">Discover how much you can save with our exclusive deals</p>
+      <noscript>
+        <div class="bg-red-100 border-l-4 border-red-500 p-4 mb-6 text-red-700 max-w-2xl mx-auto">
+          <p>JavaScript is disabled in your browser. Please enable JavaScript to use the savings calculator.</p>
+        </div>
+      </noscript>
+      <div class="max-w-2xl mx-auto bg-gradient-to-br from-blue-50 to-amber-50 rounded-2xl p-8 shadow-lg border border-gray-200">
+        <div class="mb-6">
+          <label for="countrySelect" class="block text-lg font-medium mb-2">Destination</label>
+          <select id="countrySelect" class="w-full p-4 border rounded-lg focus:ring-2 focus:ring-blue-500 text-lg">
+            <option value="">Select a destination</option>
+            <option value="italy">Italy (Save up to 23%)</option>
+            <option value="japan">Japan (Save up to 18%)</option>
+            <option value="brazil">Brazil (Save up to 27%)</option>
+            <option value="france">France (Save up to 21%)</option>
+            <option value="thailand">Thailand (Save up to 31%)</option>
+          </select>
+        </div>
+        <div class="mb-6">
+          <label for="tripBudget" class="block text-lg font-medium mb-2">Trip Budget (€)</label>
+          <input 
+            type="number" 
+            id="tripBudget" 
+            placeholder="2000" 
+            min="100"
+            class="w-full p-4 border rounded-lg focus:ring-2 focus:ring-blue-500 text-lg">
+        </div>
+        <button 
+          onclick="calculateAdvancedSavings()"
+          class="w-full bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-bold py-4 px-6 rounded-lg text-lg transition-all transform hover:scale-[1.02] shadow-lg mb-8">
+          Calculate My Savings
+        </button>
+        <div id="loadingIndicator" class="hidden text-center py-4">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600 mb-2"></div>
+          <p class="text-gray-600">Calculating your savings...</p>
+        </div>
+        <div id="resultsContainer" class="hidden space-y-6">
+          <div class="bg-white p-6 rounded-xl border-2 border-green-500 shadow-md">
+            <div class="flex items-center mb-3">
+              <div class="bg-green-100 p-2 rounded-full mr-4">
+                <i class="fas fa-coins text-green-600 text-xl"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900">You Could Save: <span id="savingsAmount" class="text-green-600">€0</span></h3>
+            </div>
+            <p class="text-gray-600" id="savingsNote">*Based on average savings from travelers like you</p>
+          </div>
+          <div>
+            <h4 class="text-xl font-bold mb-4 flex items-center">
+              <i class="fas fa-bolt text-amber-500 mr-2"></i> Recommended Deals
+            </h4>
+            <div class="grid md:grid-cols-2 gap-4" id="dynamicDeals"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+          var firstSheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[firstSheetName];
+          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+          var filteredData = jsonData.filter(row => row.some(filledCell));
+          var headerRowIndex = filteredData.findIndex((row, index) =>
+            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+          );
+          if (headerRowIndex === -1 || headerRowIndex > 25) {
+            headerRowIndex = 0;
+          }
+          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+          return csv;
+        } catch (e) {
+          console.error(e);
+          return "";
+        }
+      }
+      return gk_fileData[filename] || "";
+    }
+
+    const countryData = {
+      italy: {
+        savingsRate: 0.23,
+        deals: [
+          { title: "Skip-the-Line Tickets", savings: "Save 30%", link: "https://tiqets.tp.st/NxYnWZfU", icon: "fas fa-ticket-alt" },
+          { title: "Tuscany Car Rental", savings: "Save 35%", link: "https://localrent.tp.st/tBbjydi3", icon: "fas fa-car" },
+          { title: "Rome Audio Tours", savings: "Save 40%", link: "https://wegotrip.tp.st/8Fiplbc2", icon: "fas fa-headphones" },
+          { title: "Travel Insurance", savings: "From €1.50/day", link: "https://visitorscoverage.tp.st/kVEKww8v", icon: "fas fa-shield-alt" }
+        ]
+      },
+      japan: {
+        savingsRate: 0.18,
+        deals: [
+          { title: "JR Rail Pass", savings: "Save 20%", link: "https://japanrailpass.tp.st/Jx2JjQZR", icon: "fas fa-train" },
+          { title: "Kyoto Temple Tours", savings: "Save 15%", link: "https://getyourguide.tp.st/5XqJQZqR", icon: "fas fa-torii-gate" },
+          { title: "Airport Transfers", savings: "Save 25%", link: "https://kiwitaxi.tp.st/taiuAv3L", icon: "fas fa-taxi" },
+          { title: "eSIM Data Plans", savings: "From €4.50", link: "https://airalo.tp.st/WPsFTtzQ", icon: "fas fa-sim-card" }
+        ]
+      },
+      brazil: {
+        savingsRate: 0.27,
+        deals: [
+          { title: "Rio Audio Tours", savings: "Save 40%", link: "https://wegotrip.tp.st/8Fiplbc2", icon: "fas fa-headphones" },
+          { title: "Amazon Jungle Lodges", savings: "Save 25%", link: "https://hotellook.tp.st/Hzdj7WBz", icon: "fas fa-tree" },
+          { title: "Carnival Experiences", savings: "Save 30%", link: "https://ticketnetwork.tp.st/opSNV9TX", icon: "fas fa-mask" },
+          { title: "Local SIM Cards", savings: "Unlimited data", link: "https://drimsim.tp.st/XzVDEhhz", icon: "fas fa-sim-card" }
+        ]
+      },
+      france: {
+        savingsRate: 0.21,
+        deals: [
+          { title: "Paris Museum Pass", savings: "Save 25%", link: "https://tiqets.tp.st/NxYnWZfU", icon: "fas fa-landmark" },
+          { title: "Provence Wine Tours", savings: "Save 30%", link: "https://getyourguide.tp.st/5XqJQZqR", icon: "fas fa-wine-glass-alt" },
+          { title: "Eiffel Tower Tickets", savings: "Skip the line", link: "https://ticketnetwork.tp.st/opSNV9TX", icon: "fas fa-monument" },
+          { title: "French Riviera Cars", savings: "From €18/day", link: "https://localrent.tp.st/tBbjydi3", icon: "fas fa-car" }
+        ]
+      },
+      thailand: {
+        savingsRate: 0.31,
+        deals: [
+          { title: "Bangkok Tuk-Tuk Tours", savings: "Save 35%", link: "https://getyourguide.tp.st/5XqJQZqR", icon: "fas fa-taxi" },
+          { title: "Phi Phi Island Cruise", savings: "Save 40%", link: "https://getyourguide.tp.st/5XqJQZqR", icon: "fas fa-ship" },
+          { title: "Travel Insurance", savings: "COVID coverage", link: "https://visitorscoverage.tp.st/kVEKww8v", icon: "fas fa-shield-alt" },
+          { title: "Island Hopping Pass", savings: "Unlimited ferries", link: "https://ticketnetwork.tp.st/opSNV9TX", icon: "fas fa-ferry" }
+        ]
+      }
+    };
+
+    function calculateAdvancedSavings() {
+      const country = document.getElementById('countrySelect').value;
+      const budget = parseFloat(document.getElementById('tripBudget').value);
+      
+      if (!country) {
+        alert("Please select a destination");
+        return;
+      }
+      if (isNaN(budget) || budget <= 100) {
+        alert("Please enter a valid budget of at least €100");
+        return;
+      }
+      if (!countryData[country]) {
+        alert("Selected country data is not available. Please try again later.");
+        return;
+      }
+      
+      document.getElementById('loadingIndicator').classList.remove('hidden');
+      document.getElementById('resultsContainer').classList.add('hidden');
+      
+      setTimeout(() => {
+        const data = countryData[country];
+        const savings = (budget * data.savingsRate).toFixed(2);
+        document.getElementById('savingsAmount').textContent = `€${savings}`;
+        document.getElementById('savingsNote').textContent = 
+          `*Average savings in ${country.charAt(0).toUpperCase() + country.slice(1)}: ${(data.savingsRate * 100).toFixed(0)}%`;
+        
+        const dealsContainer = document.getElementById('dynamicDeals');
+        dealsContainer.innerHTML = '';
+        
+        data.deals.forEach(deal => {
+          dealsContainer.innerHTML += `
+            <a href="${deal.link}" target="_blank" rel="noopener noreferrer" class="bg-white hover:bg-gray-50 p-4 rounded-lg border border-gray-200 transition transform hover:scale-[1.02] shadow-sm">
+              <div class="flex items-center">
+                <div class="bg-blue-100 p-3 rounded-full mr-4">
+                  <i class="${deal.icon} text-blue-600"></i>
+                </div>
+                <div>
+                  <h5 class="font-bold text-gray-800">${deal.title}</h5>
+                  <p class="text-sm text-amber-600 font-medium">${deal.savings}</p>
+                </div>
+              </div>
+            </a>
+          `;
+        });
+
+        document.getElementById('loadingIndicator').classList.add('hidden');
+        document.getElementById('resultsContainer').classList.remove('hidden');
+        document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'calculator_used', {
+            'country': country,
+            'budget': budget,
+            'savings': savings
+          });
+        }
+      }, 800);
+    }
+  </script>
+
+  <!-- Popular Guides -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-6">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-800">Popular Guides</h2>
+      <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <a href="https://medium.com/@jcbergxuxu" target="_blank" rel="noopener noreferrer" class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition transform hover:scale-[1.02]">
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Italy on €50/Day</h3>
+          <p class="text-gray-600">Explore Italy on a budget with our expert tips and exclusive deals.</p>
+        </a>
+        <a href="https://medium.com/@jcbergxuxu/japan-explorer-master-the-art-of-affiliate-marketing-in-the-land-of-the-rising-sun-b99b5e21615c" target="_blank" rel="noopener noreferrer" class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition transform hover:scale-[1.02]">
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Japan Cherry Blossoms</h3>
+          <p class="text-gray-600">Plan your trip to see Japan's stunning cherry blossoms with our guide.</p>
+        </a>
+        <a href="https://medium.com/@jcbergxuxu/bali-paradise-for-travelers-affiliate-marketers-the-ultimate-dual-guide-fa9d8f9c00d4" target="_blank" rel="noopener noreferrer" class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition transform hover:scale-[1.02]">
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Bali Digital Nomad Guide</h3>
+          <p class="text-gray-600">Discover Bali's best spots for digital nomads and travelers.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Premium Footer -->
+  <footer class="bg-gray-900 text-white pt-16 pb-8">
+    <div class="container mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-12">
+        <div>
+          <h3 class="text-xl font-bold mb-6 flex items-center">
+            <i class="fas fa-plane-departure mr-2"></i> Travel4Fun
+          </h3>
+          <p class="text-gray-400">Smart travel guides and verified deals to help you explore the world for less.</p>
+          <div class="flex space-x-4 mt-6">
+            <a href="https://pt.pinterest.com/Travel4Fun4U/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition"><i class="fab fa-pinterest text-xl"></i></a>
+            <a href="https://x.com/DoidaoDuda" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition"><i class="fab fa-x-twitter text-xl"></i></a>
+            <a href="https://www.linkedin.com/in/jc-berg-2b355035a/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin text-xl"></i></a>
+            <a href="https://ko-fi.com/travel4fun4u" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition"><i class="fas fa-coffee text-xl"></i></a>
+          </div>
+        </div>
+        
+        <div>
+          <h4 class="font-bold text-lg mb-6">Destinations</h4>
+          <ul class="space-y-3">
+            <li><a href="https://medium.com/@jcbergxuxu/7-day-italy-trip-on-wegotrip-com-transform-your-life-today-78580177e130?utm_source=travel4fun&utm_medium=footer&utm_campaign=italy_guide" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">Italy</a></li>
+            <li><a href="https://medium.com/@jcbergxuxu/i-let-ai-plan-my-entire-trip-heres-exactly-what-happened-18be02c93a99?utm_source=travel4fun&utm_medium=footer&utm_campaign=ai_planner" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">AI Trip Planner</a></li>
+            <li><a href="https://medium.com/@jcbergxuxu/how-to-plan-smart-travel-itineraries-with-ai-step-by-step-guide-tools-0aacfb99842f?utm_source=travel4fun&utm_medium=footer&utm_campaign=ai_tools" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">AI Travel Tools</a></li>
+            <li><a href="https://medium.com/@jcbergxuxu/7-day-france-travel-handbook-explore-paris-lyon-the-riviera-3f459b5dd53d?utm_source=travel4fun&utm_medium=footer&utm_campaign=france_guide" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">France</a></li>
+            <li><a href="https://medium.com/@jcbergxuxu/exploring-thailand-while-building-your-affiliate-empire-the-ultimate-work-play-guide-56c012549d39?utm_source=travel4fun&utm_medium=footer&utm_campaign=thailand_guide" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">Thailand</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-bold text-lg mb-6">Resources</h4>
+          <ul class="space-y-3">
+            <li><a href="https://wegotrip.tp.st/8Fiplbc2" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">Audio Tours</a></li>
+            <li><a href="https://localrent.tp.st/tBbjydi3" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">Car Rentals</a></li>
+            <li><a href="https://visitorscoverage.tp.st/kVEKww8v" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">Travel Insurance</a></li>
+            <li><a href="https://airalo.tp.st/WPsFTtzQ" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition">eSIM Cards</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="font-bold text-lg mb-6">Company</h4>
+          <ul class="space-y-3">
+            <li><a href="/about" class="text-gray-400 hover:text-white transition">About Us</a></li>
+            <li><a href="/contact" class="text-gray-400 hover:text-white transition">Contact</a></li>
+            <li><a href="/affiliate-disclosure" class="text-gray-400 hover:text-white transition">Affiliate Disclosure</a></li>
+            <li><a href="/privacy" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="/terms" class="text-gray-400 hover:text-white transition">Terms of Service</a></li>
+            <li><a href="javascript:window.cookieconsent.open();" class="text-gray-400 hover:text-white transition">Manage Cookie Preferences</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+        <p>© 2025 Travel4Fun. All rights reserved. Partnered with <a href="https://www.travelpayouts.com/?marker=609158" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">Travelpayouts</a>.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    document.querySelectorAll('a[href*="tp.st"]').forEach(link => {
+      link.addEventListener('click', function() {
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'affiliate_click', {
+            'event_category': 'Affiliate',
+            'event_label': this.href,
+            'value': 1
+          });
+        }
+      });
+    });
+  </script>
+
+  <!-- CookieConsent and Google Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+  <script>
+    function initializeCookieConsent() {
+      if (window.cookieconsent) {
+        window.cookieconsent.initialise({
+          palette: {
+            popup: { background: "#1e293b" },
+            button: { background: "#f59e0b" }
+          },
+          position: "bottom-left",
+          type: "opt-in",
+          content: {
+            message: "We use cookies to enhance your experience, analyze site usage, and serve personalized ads via third parties like Google AdSense. By clicking 'Allow', you consent to our use of cookies.",
+            dismiss: "Decline",
+            allow: "Allow",
+            link: "Learn more",
+            href: "/privacy"
+          },
+          onInitialise: function(status) {
+            if (status === 'allow' && !window.gaLoaded) {
+              loadGoogleAnalytics();
+            }
+          },
+          onStatusChange: function(status) {
+            if (status === 'allow' && !window.gaLoaded) {
+              loadGoogleAnalytics();
+            }
+          }
+        });
+      } else {
+        // Tenta novamente após um pequeno atraso se a biblioteca ainda não estiver carregada
+        setTimeout(initializeCookieConsent, 100);
+      }
+    }
+
+    // Chama a função de inicialização
+    initializeCookieConsent();
+
+    function loadGoogleAnalytics() {
+      if (window.gaLoaded) return;
+      var ga = document.createElement('script');
+      ga.async = true;
+      ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-VPB2FSQ7S2';
+      document.head.appendChild(ga);
+      
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VPB2FSQ7S2');
+      window.gaLoaded = true;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | Travel4Fun</title>
+  <meta name="description" content="Learn about Travel4Fun's mission to provide smart travel guides and verified deals for your adventures.">
+  <meta name="keywords" content="about travel4fun, travel mission">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <!-- Preload and CSS -->
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" as="style">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" as="style">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  
+  <!-- CookieConsent CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css">
+
+  <!-- Google AdSense Script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9106842518042265" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <!-- Google AdSense Autorelaxed Ad -->
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-format="autorelaxed"
+       data-ad-client="ca-pub-9106842518042265"
+       data-ad-slot="7506524692"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-lg fixed w-full z-50">
+    <div class="container mx-auto px-6 py-4">
+      <div class="flex justify-between items-center">
+        <a href="/" class="text-2xl font-bold text-blue-600 flex items-center">
+          <i class="fas fa-plane-departure mr-2"></i> Travel4Fun
+        </a>
+        <div class="hidden md:flex space-x-6">
+          <a href="/index.html#destinations" class="text-gray-600 hover:text-blue-600">Destinations</a>
+          <a href="/index.html#deals" class="text-gray-600 hover:text-blue-600">Hot Deals</a>
+          <a href="/index.html#guides" class="text-gray-600 hover:text-blue-600">Guides</a>
+          <a href="/index.html#testimonials" class="text-gray-600 hover:text-blue-600">Reviews</a>
+        </div>
+        <button id="mobile-menu-button" class="md:hidden focus:outline-none" aria-expanded="false" aria-controls="mobile-menu">
+          <i class="fas fa-bars text-gray-600 text-2xl"></i>
+        </button>
+      </div>
+      <div id="mobile-menu" class="hidden md:hidden mt-4" role="menu">
+        <a href="/index.html#destinations" class="block py-2 text-gray-600 hover:text-blue-600">Destinations</a>
+        <a href="/index.html#deals" class="block py-2 text-gray-600 hover:text-blue-600">Hot Deals</a>
+        <a href="/index.html#guides" class="block py-2 text-gray-600 hover:text-blue-600">Guides</a>
+        <a href="/index.html#testimonials" class="block py-2 text-gray-600 hover:text-blue-600">Reviews</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- About Section -->
+  <section class="pt-32 pb-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+    <div class="container mx-auto px-6">
+      <h1 class="text-3xl md:text-4xl font-bold text-center mb-8">About Travel4Fun</h1>
+      <div class="max-w-3xl mx-auto bg-white text-gray-800 p-8 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-4">Our Mission</h2>
+        <p class="mb-4">
+          At Travel4Fun, we’re passionate about helping you explore the world smarter and for less. Our mission is to provide you with reliable travel guides, insider tips, and verified deals through trusted partners, so you can focus on making memories.
+        </p>
+        
+        <h2 class="text-2xl font-bold mb-4">What We Do</h2>
+        <p class="mb-4">
+          We curate travel guides and partner with top travel companies to bring you the best deals on audio tours, car rentals, and more. Through our affiliate partnerships, we earn a small commission at no extra cost to you, which helps us keep our resources free.
+        </p>
+        
+        <div class="my-8">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" alt="A serene beach with turquoise water and palm trees" class="w-full h-64 object-cover rounded-lg">
+        </div>
+        
+        <h2 class="text-2xl font-bold mb-4">Get Involved</h2>
+        <p class="mb-4">
+          Want to share your travel story or collaborate with us? We’d love to hear from you! Reach out to us at: <a href="/cdn-cgi/l/email-protection#4135273027242d7527243f752413272724313d31393c7e333f3d" class="text-blue-600 hover:underline"><span class="__cf_email__" data-cfemail="c4b0b6a5b2a1a8f0a2b1aaf0b184b0b1b0a5a9a5ada8eaa7aba9">[email&#160;protected]</span></a>
+          <noscript>Please enable JavaScript to view the email address, or contact us at travel4fun4u@tutamail.com.</noscript>
+        </p>
+        
+        <h2 class="text-2xl font-bold mb-4">Stay Updated</h2>
+        <p class="mb-4">Subscribe to our newsletter for the latest travel tips and deals.</p>
+        <form name="newsletter" method="POST" data-netlify="true" class="space-y-4">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email <span class="text-red-500">*</span></label>
+            <input type="email" id="email" name="email" required aria-required="true" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+          </div>
+          <div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Subscribe</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white pt-16 pb-8">
+    <div class="container mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-12">
+        <div>
+          <h3 class="text-xl font-bold mb-6 flex items-center">
+            <i class="fas fa-plane-departure mr-2"></i> Travel4Fun
+          </h3>
+          <p class="text-gray-300">Smart travel guides and verified deals to help you explore the world for less.</p>
+          <div class="flex space-x-4 mt-6">
+            <a href="https://pt.pinterest.com/Travel4Fun4U/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition" aria-label="Visit our Pinterest page"><i class="fab fa-pinterest text-xl"></i></a>
+            <a href="https://x.com/DoidaoDuda" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition" aria-label="Visit our X page"><i class="fab fa-x-twitter text-xl"></i></a>
+            <a href="https://www.linkedin.com/in/jc-berg-2b355035a/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition" aria-label="Visit our LinkedIn page"><i class="fab fa-linkedin text-xl"></i></a>
+            <a href="https://ko-fi.com/travel4fun4u" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition" aria-label="Support us on Ko-fi"><i class="fas fa-coffee text-xl"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="font-bold text-lg mb-6">Destinations</h4>
+          <ul class="space-y-3">
+            <li><a href="https://medium.com/@jcbergxuxu/7-day-italy-trip-on-wegotrip-com-transform-your-life-today-78580177e130" target="_blank" rel="noopener" class="text-gray-300 hover:text-white transition">Italy</a></li>
+            <li><a href="https://medium.com/@jcbergxuxu/i-let-ai-plan-my-entire-trip-heres-exactly-what-happened-18be02c93a99" target="_blank" rel="noopener" class="text-gray-300 hover:text-white transition">AI Trip Planner</a></li>
+            <li><a href="https://medium.com/@jcbergxuxu/how-to-plan-smart-travel-itineraries-with-ai-step-by-step-guide-tools-0aacfb99842f" target="_blank" rel="noopener" class="text-gray-300 hover:text-white transition">AI Travel Tools</a></li>
+            <li><a href="https://medium.com/@jcbergxuxu/7-day-france-travel-handbook-explore-paris-lyon-the-riviera-3f459b5dd53d" target="_blank" rel="noopener" class="text-gray-300 hover:text-white transition">France</a></li>
+            <li><a href="https://medium.com/@jcbergxuxu/exploring-thailand-while-building-your-affiliate-empire-the-ultimate-work-play-guide-56c012549d39" target="_blank" rel="noopener" class="text-gray-300 hover:text-white transition">Thailand</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-lg mb-6">Resources</h4>
+          <ul class="space-y-3">
+            <li><a href="https://wegotrip.tp.st/8Fiplbc2" class="text-gray-300 hover:text-white transition">Audio Tours</a></li>
+            <li><a href="https://localrent.tp.st/tBbjydi3" class="text-gray-300 hover:text-white transition">Car Rentals</a></li>
+            <li><a href="https://visitorscoverage.tp.st/kVEKww8v" class="text-gray-300 hover:text-white transition">Travel Insurance</a></li>
+            <li><a href="https://airalo.tp.st/WPsFTtzQ" class="text-gray-300 hover:text-white transition">eSIM Cards</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-lg mb-6">Company</h4>
+          <ul class="space-y-3">
+            <li><a href="/about.html" class="text-gray-300 hover:text-white transition">About Us</a></li>
+            <li><a href="/contact.html" class="text-gray-300 hover:text-white transition">Contact</a></li>
+            <li><a href="/disclosure.html" class="text-gray-300 hover:text-white transition">Affiliate Disclosure</a></li>
+            <li><a href="/privacy.html" class="text-gray-300 hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="/terms.html" class="text-gray-300 hover:text-white transition">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-300">
+        <p>© 2025 Travel4Fun. All rights reserved. Partnered with <a href="https://www.travelpayouts.com/?marker=609158" target="_blank" class="text-blue-400 hover:underline">Travelpayouts</a>.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    document.querySelectorAll('a[href*="tp.st"]').forEach(link => {
+      link.addEventListener('click', function() {
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'affiliate_click', {
+            'event_category': 'Affiliate',
+            'event_label': this.href,
+            'value': 1
+          });
+        }
+      });
+    });
+  </script>
+  
+  <!-- Mobile Menu Toggle Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      if (menuButton && mobileMenu) {
+        menuButton.addEventListener('click', function() {
+          console.log('Menu button clicked');
+          mobileMenu.classList.toggle('hidden');
+          const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
+          menuButton.setAttribute('aria-expanded', !isExpanded);
+        });
+      } else {
+        console.error('Menu button or mobile menu not found');
+      }
+    });
+  </script>
+
+  <!-- CookieConsent and Google Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+  <script>
+    function initializeCookieConsent() {
+      if (window.cookieconsent) {
+        window.cookieconsent.initialise({
+          "palette": {
+            "popup": { "background": "#1e293b", "text": "#f8fafc" },
+            "button": { "background": "#f59e0b", "text": "#1e293b" }
+          },
+          "theme": "classic",
+          "position": "bottom-left",
+          "type": "opt-in",
+          "content": {
+            "message": "We use cookies to enhance your experience and analyze site usage. By clicking 'Accept', you agree to our use of cookies.",
+            "dismiss": "Decline",
+            "allow": "Accept",
+            "link": "Learn more",
+            "href": "/privacy.html"
+          },
+          onInitialise: function(status) {
+            if (status === 'allow' && !window.gaLoaded) {
+              loadGoogleAnalytics();
+            }
+          },
+          onStatusChange: function(status) {
+            if (status === 'allow' && !window.gaLoaded) {
+              loadGoogleAnalytics();
+            }
+          }
+        });
+      } else {
+        setTimeout(initializeCookieConsent, 100);
+      }
+    }
+
+    initializeCookieConsent();
+
+    function loadGoogleAnalytics() {
+      if (window.gaLoaded) return;
+      var ga = document.createElement('script');
+      ga.async = true;
+      ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-VPB2FSQ7S2';
+      document.head.appendChild(ga);
+      
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VPB2FSQ7S2');
+      window.gaLoaded = true;
+    }
+  </script>
+</body>
+</html>
