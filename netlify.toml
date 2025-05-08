@@ -1,0 +1,20 @@
+[build]
+  base = "/"          # Root for project files
+  publish = "/"       # Deploy root (HTML in root)
+  command = ""        # No build for static HTML
+
+[build.environment]
+  NETLIFY_FORMS = "true"  # Enable forms (if used)
+
+[[plugins]]
+  package = "@netlify/plugin-sitemap"
+[[plugins]]
+  package = "netlify-plugin-lighthouse"
+[[plugins]]
+  package = "netlify-plugin-a11y"
+[[plugins]]
+  package = "netlify-plugin-inline-critical-css"
+[[plugins]]
+  package = "netlify-plugin-image-optim"
+[[plugins]]
+  package = "netlify-plugin-checklinks"
